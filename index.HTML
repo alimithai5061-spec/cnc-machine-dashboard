@@ -1,0 +1,2774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CNC Command Center - Enhanced Version</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Orbitron:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* {
+font-family: 'Inter', 'Noto Sans SC', sans-serif;
+}
+
+.orbitron {
+font-family: 'Orbitron', sans-serif;
+}
+
+body {
+background: linear-gradient(135deg, #0a0118 0%, #1e1038 20%, #2d1b69 40%, #0f172a 60%, #1e1b4b 80%, #0a0118 100%);
+background-size: 400% 400%;
+animation: gradientShift 20s ease infinite;
+overflow-x: hidden;
+position: relative;
+}
+
+@keyframes gradientShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Dynamic background particle effects */
+.particles {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+overflow: hidden;
+z-index: -1;
+}
+
+.particle {
+position: absolute;
+background: radial-gradient(circle, rgba(138, 43, 226, 0.8) 0%, rgba(138, 43, 226, 0) 70%);
+border-radius: 50%;
+animation: floatUp 15s infinite linear;
+}
+
+@keyframes floatUp {
+0% {
+transform: translateY(100vh) translateX(0) scale(0);
+opacity: 0;
+}
+10% {
+opacity: 0.4;
+}
+90% {
+opacity: 0.4;
+}
+100% {
+transform: translateY(-100vh) translateX(100px) scale(1.5);
+opacity: 0;
+}
+}
+
+/* Enhanced glassmorphism effects */
+.glass {
+background: rgba(255, 255, 255, 0.08);
+backdrop-filter: blur(12px);
+border: 1px solid rgba(255, 255, 255, 0.18);
+box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+}
+
+.glass-dark {
+background: rgba(15, 15, 35, 0.75);
+backdrop-filter: blur(16px);
+border: 1px solid rgba(255, 255, 255, 0.12);
+box-shadow: 0 8px 32px rgba(31, 38, 135, 0.44);
+}
+
+/* Enhanced animation effects */
+@keyframes pulse {
+0%, 100% { transform: scale(1); opacity: 1; }
+50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes float {
+0%, 100% { transform: translateY(0px); }
+50% { transform: translateY(-10px); }
+}
+
+@keyframes glow {
+0%, 100% { box-shadow: 0 0 5px rgba(138, 43, 226, 0.7); }
+50% { box-shadow: 0 0 20px rgba(138, 43, 226, 1); }
+}
+
+@keyframes rotate {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+@keyframes slideIn {
+0% { transform: translateX(-100%); opacity: 0; }
+100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+0% { opacity: 0; }
+100% { opacity: 1; }
+}
+
+@keyframes shimmer {
+0% { background-position: -1000px 0; }
+100% { background-position: 1000px 0; }
+}
+
+.pulse-animation {
+animation: pulse 2s infinite;
+}
+
+.float-animation {
+animation: float 3s ease-in-out infinite;
+}
+
+.rotate-animation {
+animation: rotate 20s linear infinite;
+}
+
+.slide-in {
+animation: slideIn 0.5s ease-out;
+}
+
+.fade-in {
+animation: fadeIn 0.5s ease-out;
+}
+
+.shimmer {
+background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 20%, rgba(255,255,255,0.5) 60%, rgba(255,255,255,0) 100%);
+background-size: 1000px 100%;
+animation: shimmer 2s infinite;
+}
+
+/* Enhanced glow effects */
+.glow {
+box-shadow: 0 0 20px rgba(138, 43, 226, 0.8);
+}
+
+.glow-green {
+box-shadow: 0 0 20px rgba(16, 185, 129, 0.8);
+}
+
+.glow-red {
+box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+}
+
+.glow-orange {
+box-shadow: 0 0 20px rgba(251, 146, 60, 0.8);
+}
+
+.glow-purple {
+box-shadow: 0 0 20px rgba(168, 85, 247, 0.8);
+}
+
+.glow-cyan {
+box-shadow: 0 0 20px rgba(6, 182, 212, 0.8);
+}
+
+.glow-pink {
+box-shadow: 0 0 20px rgba(236, 72, 153, 0.8);
+}
+
+.glow-yellow {
+box-shadow: 0 0 20px rgba(250, 204, 21, 0.8);
+}
+
+.glow-indigo {
+box-shadow: 0 0 20px rgba(99, 102, 241, 0.8);
+}
+
+/* Enhanced custom scrollbar */
+::-webkit-scrollbar {
+width: 10px;
+height: 10px;
+}
+
+::-webkit-scrollbar-track {
+background: rgba(30, 30, 50, 0.3);
+border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+background: linear-gradient(135deg, #8a2be2 0%, #4b0082 100%);
+border-radius: 5px;
+}
+
+/* Enhanced status indicator */
+.status-indicator {
+width: 12px;
+height: 12px;
+border-radius: 50%;
+position: relative;
+}
+
+.status-indicator::after {
+content: '';
+position: absolute;
+inset: -4px;
+border-radius: 50%;
+background: inherit;
+opacity: 0.3;
+animation: pulse 2s infinite;
+}
+
+/* Enhanced hover effects */
+.hover-lift {
+transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+transform: translateY(-5px);
+box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+.hover-glow:hover {
+box-shadow: 0 0 25px rgba(138, 43, 226, 0.9);
+}
+
+/* Enhanced progress ring */
+.progress-ring {
+transform: rotate(-90deg);
+}
+
+/* Enhanced notification badge */
+.notification-badge {
+position: absolute;
+top: -5px;
+right: -5px;
+background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+color: white;
+border-radius: 50%;
+width: 20px;
+height: 20px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 12px;
+font-weight: bold;
+animation: pulse 2s infinite;
+}
+
+/* Enhanced update status */
+.update-status {
+position: fixed;
+bottom: 20px;
+right: 20px;
+z-index: 100;
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px 15px;
+background: rgba(20, 20, 40, 0.85);
+border-radius: 12px;
+font-size: 12px;
+border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.update-indicator {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.update-indicator.updating {
+background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+animation: pulse 1s infinite;
+}
+
+.update-indicator.countdown {
+background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
+}
+
+/* Enhanced countdown timer */
+.countdown-circle {
+width: 35px;
+height: 35px;
+position: relative;
+}
+
+.countdown-circle svg {
+transform: rotate(-90deg);
+}
+
+.countdown-text {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+font-size: 10px;
+font-weight: bold;
+}
+
+/* Enhanced canvas optimization */
+#machine-canvas {
+image-rendering: optimizeSpeed;
+image-rendering: -moz-crisp-edges;
+image-rendering: -webkit-optimize-contrast;
+image-rendering: pixelated;
+border-radius: 12px;
+}
+
+/* Enhanced loading animation */
+.loading-spinner {
+border: 3px solid rgba(255, 255, 255, 0.1);
+border-radius: 50%;
+border-top: 3px solid #6366f1;
+width: 20px;
+height: 20px;
+animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+0% { transform: rotate(0deg); }
+100% { transform: rotate(360deg); }
+}
+
+/* Enhanced cache status indicator */
+.cache-status {
+position: fixed;
+top: 20px;
+right: 20px;
+z-index: 100;
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 10px 15px;
+background: rgba(20, 20, 40, 0.85);
+border-radius: 12px;
+font-size: 12px;
+border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cache-indicator {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.cache-indicator.caching {
+background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+animation: pulse 1s infinite;
+}
+
+/* Enhanced button styles */
+.btn-primary {
+background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+transform: translateY(-2px);
+box-shadow: 0 10px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-success {
+background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+transform: translateY(-2px);
+box-shadow: 0 10px 20px rgba(16, 185, 129, 0.4);
+}
+
+.btn-danger {
+background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+transition: all 0.3s ease;
+}
+
+.btn-danger:hover {
+background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+transform: translateY(-2px);
+box-shadow: 0 10px 20px rgba(239, 68, 68, 0.4);
+}
+
+.btn-warning {
+background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+transform: translateY(-2px);
+box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Enhanced card styles */
+.card-gradient-1 {
+background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
+border: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+.card-gradient-2 {
+background: linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%);
+border: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.card-gradient-3 {
+background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(251, 146, 60, 0.25) 100%);
+border: 1px solid rgba(251, 146, 60, 0.35);
+}
+
+.card-gradient-4 {
+background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(244, 63, 94, 0.25) 100%);
+border: 1px solid rgba(244, 63, 94, 0.35);
+}
+
+.card-gradient-5 {
+background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(236, 72, 153, 0.25) 100%);
+border: 1px solid rgba(236, 72, 153, 0.35);
+}
+
+.card-gradient-6 {
+background: linear-gradient(135deg, rgba(250, 204, 21, 0.25) 0%, rgba(251, 191, 36, 0.25) 100%);
+border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.card-gradient-7 {
+background: linear-gradient(135deg, rgba(14, 165, 233, 0.25) 0%, rgba(59, 130, 246, 0.25) 100%);
+border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.card-gradient-8 {
+background: linear-gradient(135deg, rgba(34, 197, 94, 0.25) 0%, rgba(16, 185, 129, 0.25) 100%);
+border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+/* Enhanced navigation */
+.nav-active {
+background: linear-gradient(135deg, rgba(99, 102, 241, 0.35) 0%, rgba(139, 92, 246, 0.35) 100%);
+border-left: 3px solid #6366f1;
+}
+
+/* Enhanced chart container */
+.chart-container {
+position: relative;
+height: 300px;
+background: rgba(20, 20, 40, 0.4);
+border-radius: 12px;
+padding: 15px;
+border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Enhanced modal */
+.modal-content {
+background: linear-gradient(135deg, rgba(30, 30, 50, 0.95) 0%, rgba(40, 40, 70, 0.95) 100%);
+border: 1px solid rgba(255, 255, 255, 0.2);
+box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
+/* Enhanced table */
+.table-header {
+background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
+border-bottom: 1px solid rgba(139, 92, 246, 0.35);
+}
+
+.table-row:hover {
+background: rgba(99, 102, 241, 0.15);
+}
+
+/* Enhanced alert */
+.alert-high {
+background: linear-gradient(135deg, rgba(239, 68, 68, 0.25) 0%, rgba(244, 63, 94, 0.25) 100%);
+border: 1px solid rgba(244, 63, 94, 0.6);
+}
+
+.alert-medium {
+background: linear-gradient(135deg, rgba(245, 158, 11, 0.25) 0%, rgba(251, 146, 60, 0.25) 100%);
+border: 1px solid rgba(251, 146, 60, 0.6);
+}
+
+.alert-low {
+background: linear-gradient(135deg, rgba(251, 191, 36, 0.25) 0%, rgba(245, 158, 11, 0.25) 100%);
+border: 1px solid rgba(245, 158, 11, 0.6);
+}
+
+/* Enhanced tab */
+.tab-active {
+background: linear-gradient(135deg, rgba(99, 102, 241, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%);
+border-bottom: 2px solid #6366f1;
+}
+
+/* Enhanced input */
+.input-field {
+background: rgba(30, 30, 50, 0.6);
+border: 1px solid rgba(99, 102, 241, 0.35);
+transition: all 0.3s ease;
+}
+
+.input-field:focus {
+border-color: #6366f1;
+box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Enhanced select */
+.select-field {
+background: rgba(30, 30, 50, 0.6);
+border: 1px solid rgba(99, 102, 241, 0.35);
+transition: all 0.3s ease;
+}
+
+.select-field:focus {
+border-color: #6366f1;
+box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Enhanced textarea */
+.textarea-field {
+background: rgba(30, 30, 50, 0.6);
+border: 1px solid rgba(99, 102, 241, 0.35);
+transition: all 0.3s ease;
+}
+
+.textarea-field:focus {
+border-color: #6366f1;
+box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+}
+
+/* Enhanced title styles */
+.title-gradient-1 {
+background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.title-gradient-2 {
+background: linear-gradient(90deg, #0ea5e9 0%, #3b82f6 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.title-gradient-3 {
+background: linear-gradient(90deg, #10b981 0%, #34d399 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.title-gradient-4 {
+background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+.title-gradient-5 {
+background: linear-gradient(90deg, #ec4899 0%, #f43f5e 100%);
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+
+/* Enhanced icon styles */
+.icon-gradient-1 {
+background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.icon-gradient-2 {
+background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+}
+
+.icon-gradient-3 {
+background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.icon-gradient-4 {
+background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+}
+
+.icon-gradient-5 {
+background: linear-gradient(135deg, #ec4899 0%, #f43f5e 100%);
+}
+
+.icon-gradient-6 {
+background: linear-gradient(135deg, #8b5cf6 0%, #d946ef 100%);
+}
+
+.icon-gradient-7 {
+background: linear-gradient(135deg, #14b8a6 0%, #06b6d4 100%);
+}
+
+.icon-gradient-8 {
+background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+}
+
+/* Asian style decorative elements */
+.asian-pattern {
+background-image: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%238b5cf6' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M0 40L40 0H20L0 20M40 40V20L20 40'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* 3D card effect */
+.card-3d {
+transform-style: preserve-3d;
+transition: transform 0.6s;
+}
+
+.card-3d:hover {
+transform: rotateY(5deg) rotateX(-5deg);
+}
+
+/* Data flow effect */
+.data-flow {
+position: relative;
+overflow: hidden;
+}
+
+.data-flow::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.4), transparent);
+animation: dataFlow 3s infinite;
+}
+
+@keyframes dataFlow {
+0% { left: -100%; }
+100% { left: 100%; }
+}
+
+/* Pulse border effect */
+.pulse-border {
+position: relative;
+}
+
+.pulse-border::before {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border-radius: inherit;
+background: inherit;
+z-index: -1;
+}
+
+.pulse-border::after {
+content: '';
+position: absolute;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+border-radius: inherit;
+background: inherit;
+z-index: -2;
+animation: pulseBorder 2s infinite;
+}
+
+@keyframes pulseBorder {
+0% {
+box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.7);
+}
+70% {
+box-shadow: 0 0 0 10px rgba(138, 43, 226, 0);
+}
+100% {
+box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
+}
+}
+
+/* Magnetic button effect */
+.magnetic-btn {
+position: relative;
+transition: all 0.3s ease;
+}
+
+.magnetic-btn:hover {
+transform: scale(1.05);
+}
+
+/* Particle burst effect */
+.particle-burst {
+position: relative;
+overflow: hidden;
+}
+
+.particle-burst::after {
+content: '';
+position: absolute;
+top: 50%;
+left: 50%;
+width: 5px;
+height: 5px;
+background: rgba(138, 43, 226, 0.8);
+opacity: 0;
+border-radius: 100%;
+transform: scale(1, 1) translate(-50%);
+transform-origin: 50% 50%;
+}
+
+.particle-burst:focus:not(:active)::after {
+animation: particleBurst 0.5s ease-out;
+}
+
+@keyframes particleBurst {
+0% {
+transform: scale(1, 1) translate(-50%);
+opacity: 1;
+}
+100% {
+transform: scale(20, 20) translate(-50%);
+opacity: 0;
+}
+}
+
+/* Holographic effect */
+.holographic {
+background: linear-gradient(45deg, 
+  rgba(255, 0, 150, 0.1), 
+  rgba(0, 255, 255, 0.1), 
+  rgba(255, 0, 150, 0.1));
+background-size: 200% 200%;
+animation: holographicShift 3s ease infinite;
+}
+
+@keyframes holographicShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+.glass-dark {
+background: rgba(15, 15, 35, 0.85);
+}
+}
+</style>
+</head>
+<body class="text-white">
+<!-- Dynamic background particles -->
+<div class="particles" id="particles"></div>
+
+<!-- Cache status -->
+<div class="cache-status">
+<div id="cache-indicator" class="cache-indicator"></div>
+<span id="cache-text">Cache Ready</span>
+</div>
+
+<!-- Update status with countdown -->
+<div class="update-status">
+<div id="update-indicator" class="update-indicator"></div>
+<span id="update-text">Next update: <span id="countdown">30</span>s</span>
+<div class="countdown-circle ml-2">
+<svg width="35" height="35">
+<circle cx="17.5" cy="17.5" r="14" stroke="rgba(255, 255, 255, 0.2)" stroke-width="2" fill="none"/>
+<circle id="countdown-circle" cx="17.5" cy="17.5" r="14" stroke="url(#gradient)" stroke-width="2" fill="none"
+stroke-dasharray="87.96" stroke-dashoffset="0" stroke-linecap="round"/>
+<defs>
+<linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+<stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+<stop offset="100%" style="stop-color:#818cf8;stop-opacity:1" />
+</linearGradient>
+</defs>
+</svg>
+<div class="countdown-text" id="countdown-small">30</div>
+</div>
+</div>
+
+<!-- Main container -->
+<div class="flex h-screen">
+<!-- Sidebar -->
+<aside class="w-64 glass-dark border-r border-gray-700 p-6 flex flex-col slide-in asian-pattern">
+<div class="mb-8">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-10 h-10 icon-gradient-1 rounded-lg flex items-center justify-center float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+</svg>
+</div>
+<div>
+<h1 class="text-xl font-bold orbitron">CNC Command Center</h1>
+<p class="text-xs text-gray-400">Enhanced Version v3.0</p>
+</div>
+</div>
+</div>
+
+<nav class="flex-1">
+<ul class="space-y-2">
+<li>
+<button onclick="setView('overview')" id="nav-overview" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition-all flex items-center gap-3 nav-active">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="3" width="7" height="7"/>
+<rect x="14" y="3" width="7" height="7"/>
+<rect x="14" y="14" width="7" height="7"/>
+<rect x="3" y="14" width="7" height="7"/>
+</svg>
+Overview
+</button>
+</li>
+<li>
+<button onclick="setView('monitoring')" id="nav-monitoring" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition-all flex items-center gap-3">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+<circle cx="12" cy="13" r="4"/>
+</svg>
+Live Monitoring
+</button>
+</li>
+<li>
+<button onclick="setView('analytics')" id="nav-analytics" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition-all flex items-center gap-3">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M18 20V10M12 20V4M6 20v-6"/>
+</svg>
+Analytics
+</button>
+</li>
+<li>
+<button onclick="setView('maintenance')" id="nav-maintenance" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition-all flex items-center gap-3">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+</svg>
+Maintenance
+</button>
+</li>
+<li>
+<button onclick="setView('reports')" id="nav-reports" class="w-full text-left px-4 py-3 rounded-lg hover:bg-white/10 transition-all flex items-center gap-3">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+<line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/>
+<polyline points="10 9 9 9 8 9"/>
+</svg>
+Reports
+</button>
+</li>
+</ul>
+</nav>
+
+<div class="border-t border-gray-700 pt-4">
+<div class="flex items-center gap-3">
+<img src="https://picsum.photos/seed/admin/40/40" alt="Admin" class="w-10 h-10 rounded-full border-2 border-indigo-500">
+<div>
+<p class="font-medium">Admin User</p>
+<p class="text-xs text-gray-400">System Administrator</p>
+</div>
+</div>
+</div>
+</aside>
+
+<!-- Main content -->
+<main class="flex-1 overflow-hidden">
+<!-- Header -->
+<header class="glass border-b border-gray-700 px-6 py-4 fade-in holographic">
+<div class="flex items-center justify-between">
+<div>
+<h2 id="page-title" class="text-2xl font-bold title-gradient-1 orbitron">System Overview</h2>
+<p class="text-sm text-gray-400 mt-1">
+<span id="current-time"></span> •
+<span id="system-status">All Systems Operational</span> •
+<span class="text-indigo-400">Auto-update: 30s</span>
+</p>
+</div>
+<div class="flex items-center gap-4">
+<button class="relative p-2 hover:bg-white/10 rounded-lg transition-all hover-glow magnetic-btn">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+<path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+</svg>
+<span id="notification-badge" class="notification-badge hidden">0</span>
+</button>
+<button onclick="toggleTheme()" class="p-2 hover:bg-white/10 rounded-lg transition-all hover-glow magnetic-btn">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<circle cx="12" cy="12" r="5"/>
+<line x1="12" y1="1" x2="12" y2="3"/>
+<line x1="12" y1="21" x2="12" y2="23"/>
+<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+<line x1="1" y1="12" x2="3" y2="12"/>
+<line x1="21" y1="12" x2="23" y2="12"/>
+<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+</svg>
+</button>
+</div>
+</div>
+</header>
+
+<!-- Content area -->
+<div id="content-area" class="p-6 overflow-y-auto h-[calc(100vh-80px)]">
+<!-- Dynamic content will be loaded here -->
+</div>
+</main>
+</div>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+<script>
+// Enhanced state management with caching
+const state = {
+currentView: 'overview',
+selectedMachineId: 1,
+theme: 'dark',
+lastUpdateTime: new Date(),
+countdown: 30,
+updateInterval: 30000, // 30 seconds in milliseconds
+machines: [
+{
+id: 1,
+name: 'CNC Mill Alpha',
+status: 'running',
+temp: 68,
+spindle: 3500,
+feed: 850,
+runtime: 0,
+lastMaint: '2025-09-15',
+nextMaintDue: '2025-10-15',
+maintenanceCount: 3,
+hoursSinceMaint: 120,
+efficiency: 94,
+production: 1250,
+healthScore: 92,
+vibration: 2.1,
+pressure: 120,
+power: 85
+},
+{
+id: 2,
+name: 'CNC Lathe Beta',
+status: 'idle',
+temp: 45,
+spindle: 0,
+feed: 0,
+runtime: 0,
+lastMaint: '2025-09-20',
+nextMaintDue: '2025-10-20',
+maintenanceCount: 2,
+hoursSinceMaint: 80,
+efficiency: 0,
+production: 0,
+healthScore: 88,
+vibration: 0.5,
+pressure: 100,
+power: 5
+},
+{
+id: 3,
+name: 'CNC Router Gamma',
+status: 'running',
+temp: 72,
+spindle: 4200,
+feed: 1200,
+runtime: 0,
+lastMaint: '2025-09-10',
+nextMaintDue: '2025-10-10',
+maintenanceCount: 4,
+hoursSinceMaint: 150,
+efficiency: 87,
+production: 980,
+healthScore: 78,
+vibration: 3.2,
+pressure: 135,
+power: 92
+}
+],
+logs: [
+{ id: 1, machineId: 1, type: 'maintenance', timestamp: '2025-09-15 14:30', description: 'Routine maintenance - Oil change and belt inspection', technician: 'John Smith', severity: 'low' },
+{ id: 2, machineId: 1, type: 'work', timestamp: '2025-09-28 09:15', description: 'Started production run - Part #A4521', operator: 'Sarah Johnson', severity: 'info' },
+{ id: 3, machineId: 3, type: 'alert', timestamp: '2025-09-30 16:45', description: 'High temperature warning - Cooling system check required', status: 'resolved', severity: 'high' }
+],
+alerts: [],
+maintenanceSchedule: [
+{ id: 1, machineId: 1, scheduledDate: '2025-10-15', type: 'Routine', description: 'Monthly inspection and lubrication', technician: 'John Smith', status: 'scheduled', priority: 'medium' },
+{ id: 2, machineId: 2, scheduledDate: '2025-10-20', type: 'Routine', description: 'Belt tension check and calibration', technician: 'Mike Davis', status: 'scheduled', priority: 'low' },
+{ id: 3, machineId: 3, scheduledDate: '2025-10-10', type: 'Urgent', description: 'Replace worn spindle bearings', technician: 'John Smith', status: 'scheduled', priority: 'high' }
+],
+productionData: {
+today: 3450,
+week: 23400,
+month: 98700,
+efficiency: 89.5,
+downtime: 12.3,
+quality: 97.8
+},
+// Cache properties
+cache: {
+enabled: true,
+version: '3.0.0',
+lastUpdated: null,
+data: {},
+views: {}
+}
+};
+
+// Chart instances to destroy when switching views
+let chartInstances = {};
+let updateTimer;
+let countdownTimer;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+initializeApp();
+updateTime();
+setInterval(updateTime, 1000);
+startAutoUpdate();
+startCountdown();
+initializeCache();
+initializeParticles();
+});
+
+function initializeApp() {
+render();
+updateNotificationBadge();
+}
+
+function initializeParticles() {
+const particlesContainer = document.getElementById('particles');
+const particleCount = 30;
+
+for (let i = 0; i < particleCount; i++) {
+const particle = document.createElement('div');
+particle.classList.add('particle');
+const size = Math.random() * 20 + 5;
+particle.style.width = `${size}px`;
+particle.style.height = `${size}px`;
+particle.style.left = `${Math.random() * 100}%`;
+particle.style.animationDelay = `${Math.random() * 15}s`;
+particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
+particlesContainer.appendChild(particle);
+}
+}
+
+function initializeCache() {
+// Initialize cache with current data
+state.cache.lastUpdated = new Date();
+state.cache.data = {
+machines: JSON.parse(JSON.stringify(state.machines)),
+logs: JSON.parse(JSON.stringify(state.logs)),
+alerts: JSON.parse(JSON.stringify(state.alerts)),
+maintenanceSchedule: JSON.parse(JSON.stringify(state.maintenanceSchedule)),
+productionData: JSON.parse(JSON.stringify(state.productionData))
+};
+
+// Pre-cache all views
+cacheAllViews();
+
+// Update cache status
+updateCacheStatus('ready');
+}
+
+function cacheAllViews() {
+// Cache each view template for faster rendering
+const views = ['overview', 'monitoring', 'analytics', 'maintenance', 'reports'];
+
+views.forEach(view => {
+// Create a temporary container to render the view
+const tempContainer = document.createElement('div');
+tempContainer.style.display = 'none';
+document.body.appendChild(tempContainer);
+
+// Switch to the view temporarily
+const originalView = state.currentView;
+state.currentView = view;
+
+// Render the view
+switch(view) {
+case 'overview':
+renderOverview(tempContainer);
+break;
+case 'monitoring':
+renderMonitoring(tempContainer);
+break;
+case 'analytics':
+renderAnalytics(tempContainer);
+break;
+case 'maintenance':
+renderMaintenance(tempContainer);
+break;
+case 'reports':
+renderReports(tempContainer);
+break;
+}
+
+// Store the cached HTML
+state.cache.views[view] = tempContainer.innerHTML;
+
+// Clean up
+document.body.removeChild(tempContainer);
+state.currentView = originalView;
+});
+
+console.log('All views cached successfully');
+}
+
+function updateCacheStatus(status) {
+const indicator = document.getElementById('cache-indicator');
+const text = document.getElementById('cache-text');
+
+if (indicator) {
+indicator.className = 'cache-indicator';
+if (status === 'updating') {
+indicator.classList.add('caching');
+}
+}
+
+if (text) {
+switch(status) {
+case 'ready':
+text.textContent = 'Cache Ready';
+break;
+case 'updating':
+text.textContent = 'Updating Cache...';
+break;
+case 'error':
+text.textContent = 'Cache Error';
+break;
+default:
+text.textContent = 'Cache Ready';
+}
+}
+}
+
+function updateTime() {
+const now = new Date();
+document.getElementById('current-time').textContent = now.toLocaleString('en-US', {
+weekday: 'short',
+year: 'numeric',
+month: 'short',
+day: 'numeric',
+hour: '2-digit',
+minute: '2-digit',
+second: '2-digit'
+});
+}
+
+function startAutoUpdate() {
+// Clear existing timer
+if (updateTimer) {
+clearInterval(updateTimer);
+}
+
+// Set new timer for 30 seconds
+updateTimer = setInterval(() => {
+performUpdate();
+}, state.updateInterval);
+}
+
+function startCountdown() {
+// Clear existing countdown timer
+if (countdownTimer) {
+clearInterval(countdownTimer);
+}
+
+state.countdown = 30;
+updateCountdownDisplay();
+
+countdownTimer = setInterval(() => {
+state.countdown--;
+updateCountdownDisplay();
+
+if (state.countdown <= 0) {
+state.countdown = 30; // Reset countdown
+}
+}, 1000);
+}
+
+function updateCountdownDisplay() {
+const countdownElement = document.getElementById('countdown');
+const countdownSmall = document.getElementById('countdown-small');
+const countdownCircle = document.getElementById('countdown-circle');
+const indicator = document.getElementById('update-indicator');
+
+if (countdownElement) countdownElement.textContent = state.countdown;
+if (countdownSmall) countdownSmall.textContent = state.countdown;
+
+// Update countdown circle
+if (countdownCircle) {
+const circumference = 2 * Math.PI * 14; // radius = 14
+const offset = circumference - (state.countdown / 30) * circumference;
+countdownCircle.style.strokeDashoffset = offset;
+}
+
+// Update indicator color
+if (indicator) {
+indicator.className = 'update-indicator';
+if (state.countdown <= 5) {
+indicator.classList.add('updating');
+} else {
+indicator.classList.add('countdown');
+}
+}
+}
+
+function performUpdate() {
+const indicator = document.getElementById('update-indicator');
+const updateText = document.getElementById('update-text');
+
+// Show updating status
+if (indicator) indicator.className = 'update-indicator updating';
+if (updateText) updateText.innerHTML = 'Updating...';
+
+// Update cache status
+updateCacheStatus('updating');
+
+// Update machine data
+state.machines = state.machines.map(machine => {
+if (machine.status === 'running') {
+const newTemp = machine.temp + (Math.random() - 0.5) * 2;
+const newSpindle = machine.spindle + (Math.random() - 0.5) * 100;
+const newRuntime = machine.runtime + 30; // 30 seconds worth
+const newHoursSinceMaint = machine.hoursSinceMaint + (30/3600);
+const newProduction = machine.production + Math.floor(Math.random() * 3);
+const newEfficiency = Math.max(70, Math.min(100, machine.efficiency + (Math.random() - 0.5) * 2));
+const newVibration = Math.max(0, machine.vibration + (Math.random() - 0.5) * 0.5);
+const newPower = Math.max(0, Math.min(100, machine.power + (Math.random() - 0.5) * 5));
+
+// Check for alerts
+if (newTemp > 85 && !state.alerts.find(a => a.machineId === machine.id && a.type === 'temperature')) {
+addAlert({
+id: Date.now(),
+machineId: machine.id,
+type: 'temperature',
+message: `${machine.name}: High temperature detected!`,
+severity: 'high',
+timestamp: new Date().toISOString()
+});
+}
+
+if (newVibration > 4 && !state.alerts.find(a => a.machineId === machine.id && a.type === 'vibration')) {
+addAlert({
+id: Date.now(),
+machineId: machine.id,
+type: 'vibration',
+message: `${machine.name}: Excessive vibration detected!`,
+severity: 'medium',
+timestamp: new Date().toISOString()
+});
+}
+
+if (newHoursSinceMaint > 200 && !state.alerts.find(a => a.machineId === machine.id && a.type === 'maintenance')) {
+addAlert({
+id: Date.now(),
+machineId: machine.id,
+type: 'maintenance',
+message: `${machine.name}: Maintenance is overdue!`,
+severity: 'high',
+timestamp: new Date().toISOString()
+});
+}
+
+return {
+...machine,
+temp: Math.max(40, Math.min(90, newTemp)),
+spindle: Math.max(0, newSpindle),
+runtime: newRuntime,
+hoursSinceMaint: newHoursSinceMaint,
+production: newProduction,
+efficiency: newEfficiency,
+vibration: newVibration,
+power: newPower
+};
+}
+return machine;
+});
+
+// Update production data
+state.productionData.today += Math.floor(Math.random() * 5);
+
+// Update cache with new data
+updateCache();
+
+// Update last update time
+state.lastUpdateTime = new Date();
+
+// Update UI
+render();
+
+// Reset countdown
+state.countdown = 30;
+updateCountdownDisplay();
+
+// Reset indicator after a short delay
+setTimeout(() => {
+if (updateText) updateText.innerHTML = `Next update: <span id="countdown">30</span>s`;
+updateCacheStatus('ready');
+}, 1000);
+}
+
+function updateCache() {
+// Update cache with current data
+state.cache.lastUpdated = new Date();
+state.cache.data = {
+machines: JSON.parse(JSON.stringify(state.machines)),
+logs: JSON.parse(JSON.stringify(state.logs)),
+alerts: JSON.parse(JSON.stringify(state.alerts)),
+maintenanceSchedule: JSON.parse(JSON.stringify(state.maintenanceSchedule)),
+productionData: JSON.parse(JSON.stringify(state.productionData))
+};
+
+// Update the cached view for the current view
+const tempContainer = document.createElement('div');
+tempContainer.style.display = 'none';
+document.body.appendChild(tempContainer);
+
+switch(state.currentView) {
+case 'overview':
+renderOverview(tempContainer);
+break;
+case 'monitoring':
+renderMonitoring(tempContainer);
+break;
+case 'analytics':
+renderAnalytics(tempContainer);
+break;
+case 'maintenance':
+renderMaintenance(tempContainer);
+break;
+case 'reports':
+renderReports(tempContainer);
+break;
+}
+
+state.cache.views[state.currentView] = tempContainer.innerHTML;
+document.body.removeChild(tempContainer);
+}
+
+function addAlert(alert) {
+state.alerts.push(alert);
+updateNotificationBadge();
+showNotification(alert);
+}
+
+function showNotification(alert) {
+// Create toast notification
+const toast = document.createElement('div');
+toast.className = `fixed top-20 right-6 glass p-4 rounded-lg shadow-2xl z-50 animate-pulse ${
+alert.severity === 'high' ? 'alert-high' :
+alert.severity === 'medium' ? 'alert-medium' :
+'alert-low'
+}`;
+toast.innerHTML = `
+<div class="flex items-center gap-3">
+<div class="status-indicator ${
+alert.severity === 'high' ? 'bg-red-500' :
+alert.severity === 'medium' ? 'bg-orange-500' :
+'bg-yellow-500'
+}"></div>
+<div>
+<p class="font-medium">${alert.message}</p>
+<p class="text-xs text-gray-400">${new Date(alert.timestamp).toLocaleTimeString()}</p>
+</div>
+</div>
+`;
+document.body.appendChild(toast);
+setTimeout(() => toast.remove(), 5000);
+}
+
+function updateNotificationBadge() {
+const badge = document.getElementById('notification-badge');
+const count = state.alerts.length;
+if (count > 0) {
+badge.textContent = count;
+badge.classList.remove('hidden');
+} else {
+badge.classList.add('hidden');
+}
+}
+
+function setView(view) {
+state.currentView = view;
+
+// Update navigation
+document.querySelectorAll('[id^="nav-"]').forEach(nav => {
+nav.classList.remove('nav-active');
+});
+document.getElementById(`nav-${view}`).classList.add('nav-active');
+
+// Update page title
+const titles = {
+overview: 'System Overview',
+monitoring: 'Live Monitoring',
+analytics: 'Analytics & Insights',
+maintenance: 'Maintenance Management',
+reports: 'Reports & Exports'
+};
+document.getElementById('page-title').textContent = titles[view];
+
+// Destroy existing charts to free memory
+Object.values(chartInstances).forEach(chart => {
+if (chart) chart.destroy();
+});
+chartInstances = {};
+
+// Check if view is cached
+if (state.cache.enabled && state.cache.views[view]) {
+// Use cached view for faster rendering
+document.getElementById('content-area').innerHTML = state.cache.views[view];
+
+// Re-initialize any interactive elements
+if (view === 'monitoring') {
+setTimeout(() => {
+startStaticMachineVisualization();
+initPerformanceChart();
+}, 100);
+} else if (view === 'analytics') {
+setTimeout(() => {
+initProductionChart();
+initEfficiencyChart();
+initComparisonChart();
+}, 100);
+}
+} else {
+// Render view normally
+render();
+}
+}
+
+function render() {
+const contentArea = document.getElementById('content-area');
+
+switch(state.currentView) {
+case 'overview':
+renderOverview(contentArea);
+break;
+case 'monitoring':
+renderMonitoring(contentArea);
+break;
+case 'analytics':
+renderAnalytics(contentArea);
+break;
+case 'maintenance':
+renderMaintenance(contentArea);
+break;
+case 'reports':
+renderReports(contentArea);
+break;
+}
+}
+
+function renderOverview(container) {
+const runningMachines = state.machines.filter(m => m.status === 'running').length;
+const avgEfficiency = state.machines.reduce((sum, m) => sum + m.efficiency, 0) / state.machines.length;
+const totalProduction = state.machines.reduce((sum, m) => sum + m.production, 0);
+const criticalAlerts = state.alerts.filter(a => a.severity === 'high').length;
+
+container.innerHTML = `
+<!-- KPI Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="glass-dark rounded-xl p-6 hover-lift card-gradient-1 card-3d pulse-border">
+<div class="flex items-center justify-between mb-4">
+<div class="p-3 icon-gradient-1 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+</svg>
+</div>
+<span class="text-3xl font-bold title-gradient-1">${runningMachines}/3</span>
+</div>
+<h3 class="text-gray-300 text-sm font-medium">Active Machines</h3>
+<div class="mt-2 flex items-center gap-2">
+<div class="flex-1 bg-gray-700 rounded-full h-2">
+<div class="bg-gradient-to-r from-indigo-400 to-purple-600 h-2 rounded-full" style="width: ${(runningMachines/3)*100}%"></div>
+</div>
+<span class="text-xs text-gray-300">${Math.round((runningMachines/3)*100)}%</span>
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 hover-lift card-gradient-2 card-3d pulse-border">
+<div class="flex items-center justify-between mb-4">
+<div class="p-3 icon-gradient-2 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+</svg>
+</div>
+<span class="text-3xl font-bold title-gradient-2">${avgEfficiency.toFixed(1)}%</span>
+</div>
+<h3 class="text-gray-300 text-sm font-medium">Average Efficiency</h3>
+<div class="mt-2 flex items-center gap-2">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+<polyline points="17 6 23 6 23 12"/>
+</svg>
+<span class="text-xs text-green-400">+2.3% from yesterday</span>
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 hover-lift card-gradient-3 card-3d pulse-border">
+<div class="flex items-center justify-between mb-4">
+<div class="p-3 icon-gradient-3 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+<polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+<line x1="12" y1="22.08" x2="12" y2="12"/>
+</svg>
+</div>
+<span class="text-3xl font-bold title-gradient-3">${totalProduction.toLocaleString()}</span>
+</div>
+<h3 class="text-gray-300 text-sm font-medium">Total Production</h3>
+<div class="mt-2 flex items-center gap-2">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/>
+<polyline points="17 6 23 6 23 12"/>
+</svg>
+<span class="text-xs text-green-400">On track for target</span>
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 hover-lift card-gradient-4 card-3d pulse-border">
+<div class="flex items-center justify-between mb-4">
+<div class="p-3 icon-gradient-4 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+<line x1="12" y1="9" x2="12" y2="13"/>
+<line x1="12" y1="17" x2="12.01" y2="17"/>
+</svg>
+</div>
+<span class="text-3xl font-bold title-gradient-4">${criticalAlerts}</span>
+</div>
+<h3 class="text-gray-300 text-sm font-medium">Critical Alerts</h3>
+<div class="mt-2 flex items-center gap-2">
+ ${criticalAlerts > 0 ?
+`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+<circle cx="12" cy="12" r="10"/>
+<line x1="12" y1="8" x2="12" y2="12"/>
+<line x1="12" y1="16" x2="12.01" y2="16"/>
+</svg>
+<span class="text-xs text-red-400">Requires attention</span>` :
+`<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+<polyline points="22 4 12 14.01 9 11.01"/>
+</svg>
+<span class="text-xs text-green-400">All clear</span>`
+}
+</div>
+</div>
+</div>
+
+<!-- Machine Status Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+ ${state.machines.map(machine => `
+<div class="glass-dark rounded-xl p-6 hover-lift cursor-pointer card-3d pulse-border" onclick="selectMachine(${machine.id})">
+<div class="flex items-center justify-between mb-4">
+<div>
+<h3 class="text-xl font-bold title-gradient-1">${machine.name}</h3>
+<div class="flex items-center gap-2 mt-1">
+<div class="status-indicator ${
+machine.status === 'running' ? 'bg-green-500' : 'bg-gray-500'
+}"></div>
+<span class="text-sm text-gray-300 capitalize">${machine.status}</span>
+</div>
+</div>
+<div class="text-right">
+<div class="text-2xl font-bold ${machine.efficiency > 90 ? 'text-green-400' : machine.efficiency > 70 ? 'text-yellow-400' : 'text-red-400'}">
+ ${machine.efficiency.toFixed(1)}%
+</div>
+<div class="text-xs text-gray-300">Efficiency</div>
+</div>
+</div>
+
+<div class="grid grid-cols-2 gap-4 mb-4">
+<div>
+<div class="text-xs text-gray-300 mb-1">Temperature</div>
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-gray-700 rounded-full h-2">
+<div class="h-2 rounded-full transition-all ${
+machine.temp > 80 ? 'bg-gradient-to-r from-red-400 to-red-600' :
+machine.temp > 70 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600' :
+'bg-gradient-to-r from-green-400 to-green-600'
+}" style="width: ${(machine.temp/100)*100}%"></div>
+</div>
+<span class="text-sm font-mono">${machine.temp.toFixed(1)}°C</span>
+</div>
+</div>
+<div>
+<div class="text-xs text-gray-300 mb-1">Production</div>
+<div class="text-lg font-semibold title-gradient-2">${machine.production.toLocaleString()}</div>
+</div>
+</div>
+
+<div class="flex items-center justify-between text-xs">
+<div class="flex items-center gap-4">
+<span class="text-gray-300">Health: <span class="${
+machine.healthScore > 80 ? 'text-green-400' :
+machine.healthScore > 60 ? 'text-yellow-400' :
+'text-red-400'
+}">${machine.healthScore}%</span></span>
+<span class="text-gray-300">Power: ${machine.power}%</span>
+</div>
+<button class="px-3 py-1 btn-primary rounded-lg text-xs magnetic-btn">
+View Details
+</button>
+</div>
+</div>
+`).join('')}
+</div>
+
+<!-- Recent Activity & Alerts -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 flex items-center gap-2 title-gradient-1">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+</svg>
+Recent Activity
+</h3>
+<div class="space-y-3">
+ ${state.logs.slice(0, 5).map(log => {
+const machine = state.machines.find(m => m.id === log.machineId);
+return `
+<div class="flex items-start gap-3 p-3 rounded-lg hover:bg-white/5 transition-all data-flow">
+<div class="w-2 h-2 rounded-full mt-2 ${
+log.type === 'maintenance' ? 'bg-yellow-400' :
+log.type === 'work' ? 'bg-blue-400' : 'bg-red-400'
+}"></div>
+<div class="flex-1">
+<p class="text-sm font-medium text-gray-200">${log.description}</p>
+<p class="text-xs text-gray-400">${machine?.name} • ${log.timestamp}</p>
+</div>
+</div>
+`;
+}).join('')}
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 flex items-center gap-2 title-gradient-4">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+</svg>
+Active Alerts
+</h3>
+<div class="space-y-3">
+ ${state.alerts.length > 0 ? state.alerts.slice(0, 5).map(alert => {
+const machine = state.machines.find(m => m.id === alert.machineId);
+return `
+<div class="p-3 rounded-lg ${
+alert.severity === 'high' ? 'alert-high' :
+alert.severity === 'medium' ? 'alert-medium' :
+'alert-low'
+}">
+<div class="flex items-center justify-between">
+<div>
+<p class="text-sm font-medium text-gray-200">${alert.message}</p>
+<p class="text-xs text-gray-400">${machine?.name} • ${new Date(alert.timestamp).toLocaleTimeString()}</p>
+</div>
+<button onclick="dismissAlert(${alert.id})" class="text-xs px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded">
+Dismiss
+</button>
+</div>
+</div>
+`;
+}).join('') : '<p class="text-gray-400 text-center py-8">No active alerts</p>'}
+</div>
+</div>
+</div>
+`;
+}
+
+function renderMonitoring(container) {
+const selectedMachine = state.machines.find(m => m.id === state.selectedMachineId);
+
+container.innerHTML = `
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<!-- Main Monitoring Panel -->
+<div class="lg:col-span-2 space-y-6">
+<!-- Machine Visualization -->
+<div class="glass-dark rounded-xl p-6 holographic">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-xl font-semibold title-gradient-1">${selectedMachine.name} - Live Data Stream</h3>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-2">
+<div class="status-indicator ${
+selectedMachine.status === 'running' ? 'bg-green-500' : 'bg-gray-500'
+}"></div>
+<span class="text-sm capitalize text-gray-300">${selectedMachine.status}</span>
+</div>
+<button onclick="toggleMachineStatus(${selectedMachine.id})" class="px-4 py-2 ${
+selectedMachine.status === 'running' ? 'btn-danger' : 'btn-success'
+} rounded-lg transition-all flex items-center gap-2 magnetic-btn">
+ ${selectedMachine.status === 'running' ?
+'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg> Stop' :
+'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg> Start'
+}
+</button>
+</div>
+</div>
+<canvas id="machine-canvas" width="800" height="400" class="w-full bg-black rounded-lg"></canvas>
+</div>
+
+<!-- Real-time Metrics -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<div class="glass-dark rounded-lg p-4 card-gradient-1 card-3d">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-300 text-sm font-medium">Temperature</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/>
+</svg>
+</div>
+<div class="text-2xl font-bold ${selectedMachine.temp > 80 ? 'text-red-400' : 'text-green-400'}">
+ ${selectedMachine.temp.toFixed(1)}°C
+</div>
+<div class="mt-2 text-xs text-gray-400">
+Range: 40-90°C
+</div>
+</div>
+
+<div class="glass-dark rounded-lg p-4 card-gradient-2 card-3d">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-300 text-sm font-medium">Spindle</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
+</svg>
+</div>
+<div class="text-2xl font-bold title-gradient-2">
+ ${selectedMachine.spindle.toFixed(0)}
+</div>
+<div class="mt-2 text-xs text-gray-400">
+RPM
+</div>
+</div>
+
+<div class="glass-dark rounded-lg p-4 card-gradient-3 card-3d">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-300 text-sm font-medium">Vibration</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+<circle cx="12" cy="12" r="3"/>
+</svg>
+</div>
+<div class="text-2xl font-bold ${selectedMachine.vibration > 3 ? 'text-orange-400' : 'text-green-400'}">
+ ${selectedMachine.vibration.toFixed(1)}
+</div>
+<div class="mt-2 text-xs text-gray-400">
+mm/s
+</div>
+</div>
+
+<div class="glass-dark rounded-lg p-4 card-gradient-4 card-3d">
+<div class="flex items-center justify-between mb-2">
+<span class="text-gray-300 text-sm font-medium">Power</span>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+</svg>
+</div>
+<div class="text-2xl font-bold title-gradient-4">
+ ${selectedMachine.power}%
+</div>
+<div class="mt-2 text-xs text-gray-400">
+Load
+</div>
+</div>
+</div>
+
+<!-- Performance Chart -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 title-gradient-1">Performance Trends</h3>
+<div class="chart-container">
+<canvas id="performance-chart"></canvas>
+</div>
+</div>
+</div>
+
+<!-- Side Panel -->
+<div class="space-y-6">
+<!-- Machine Health Score -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 title-gradient-3">Health Score</h3>
+<div class="relative w-48 h-48 mx-auto">
+<svg class="progress-ring w-full h-full">
+<circle cx="96" cy="96" r="88" stroke="#374151" stroke-width="8" fill="none"/>
+<circle cx="96" cy="96" r="88" stroke="${
+selectedMachine.healthScore > 80 ? '#10b981' :
+selectedMachine.healthScore > 60 ? '#f59e0b' :
+'#ef4444'
+}" stroke-width="8" fill="none"
+stroke-dasharray="${2 * Math.PI * 88}"
+stroke-dashoffset="${2 * Math.PI * 88 * (1 - selectedMachine.healthScore/100)}"
+stroke-linecap="round"
+transform="rotate(-90 96 96)"/>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center">
+<span class="text-4xl font-bold title-gradient-3">${selectedMachine.healthScore}%</span>
+<span class="text-sm text-gray-300">Overall Health</span>
+</div>
+</div>
+<div class="mt-4 space-y-2">
+<div class="flex justify-between text-sm">
+<span class="text-gray-300">Temperature</span>
+<span class="${selectedMachine.temp > 80 ? 'text-red-400' : 'text-green-400'}">Normal</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-300">Vibration</span>
+<span class="${selectedMachine.vibration > 3 ? 'text-orange-400' : 'text-green-400'}">Low</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-gray-300">Maintenance</span>
+<span class="${selectedMachine.hoursSinceMaint > 150 ? 'text-orange-400' : 'text-green-400'}">On Schedule</span>
+</div>
+</div>
+</div>
+
+<!-- Quick Actions -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 title-gradient-1">Quick Actions</h3>
+<div class="space-y-3">
+<button onclick="showLogModal()" class="w-full px-4 py-3 btn-primary rounded-lg transition-all flex items-center justify-center gap-2 magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+<line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/>
+</svg>
+Add Log Entry
+</button>
+<button onclick="showScheduleModal()" class="w-full px-4 py-3 btn-warning rounded-lg transition-all flex items-center justify-center gap-2 magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+<line x1="16" y1="2" x2="16" y2="6"/>
+<line x1="8" y1="2" x2="8" y2="6"/>
+<line x1="3" y1="10" x2="21" y2="10"/>
+</svg>
+Schedule Maintenance
+</button>
+<button class="w-full px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all flex items-center justify-center gap-2 magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="7 10 12 15 17 10"/>
+<line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+Export Report
+</button>
+</div>
+</div>
+
+<!-- Recent Logs -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-lg font-semibold mb-4 title-gradient-1">Recent Logs</h3>
+<div class="space-y-3 max-h-64 overflow-y-auto">
+ ${state.logs.filter(log => log.machineId === selectedMachine.id).slice(0, 5).map(log => `
+<div class="p-3 rounded-lg bg-gray-800/50 data-flow">
+<div class="flex items-center gap-2 mb-1">
+<div class="w-2 h-2 rounded-full ${
+log.type === 'maintenance' ? 'bg-yellow-400' :
+log.type === 'work' ? 'bg-blue-400' : 'bg-red-400'
+}"></div>
+<span class="text-xs text-gray-400">${log.timestamp}</span>
+</div>
+<p class="text-sm text-gray-200">${log.description}</p>
+</div>
+`).join('')}
+</div>
+</div>
+</div>
+</div>
+`;
+
+// Initialize static canvas visualization
+setTimeout(() => startStaticMachineVisualization(), 100);
+
+// Initialize performance chart
+setTimeout(() => initPerformanceChart(), 100);
+}
+
+function renderAnalytics(container) {
+container.innerHTML = `
+<div class="space-y-6">
+<!-- Production Analytics -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-6 title-gradient-1">Production Analytics</h3>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<div>
+<h4 class="text-lg font-medium mb-4 text-gray-200">Production Trend</h4>
+<div class="chart-container">
+<canvas id="production-chart"></canvas>
+</div>
+</div>
+<div>
+<h4 class="text-lg font-medium mb-4 text-gray-200">Efficiency Metrics</h4>
+<div class="chart-container">
+<canvas id="efficiency-chart"></canvas>
+</div>
+</div>
+</div>
+</div>
+
+<!-- Machine Comparison -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-6 title-gradient-1">Machine Performance Comparison</h3>
+<div class="chart-container">
+<canvas id="comparison-chart"></canvas>
+</div>
+</div>
+
+<!-- Predictive Analytics -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="glass-dark rounded-xl p-6 card-gradient-1 card-3d">
+<h3 class="text-lg font-semibold mb-4 title-gradient-4">Predictive Maintenance</h3>
+<div class="space-y-4">
+ ${state.machines.map(machine => {
+const daysUntilMaint = Math.floor((200 - machine.hoursSinceMaint) / 24);
+return `
+<div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-gray-200">${machine.name}</span>
+<span class="${daysUntilMaint < 7 ? 'text-red-400' : daysUntilMaint < 14 ? 'text-orange-400' : 'text-green-400'}">
+ ${daysUntilMaint} days
+</span>
+</div>
+<div class="bg-gray-700 rounded-full h-2">
+<div class="h-2 rounded-full ${
+daysUntilMaint < 7 ? 'bg-gradient-to-r from-red-400 to-red-600' :
+daysUntilMaint < 14 ? 'bg-gradient-to-r from-orange-400 to-orange-600' :
+'bg-gradient-to-r from-green-400 to-green-600'
+}" style="width: ${Math.max(0, Math.min(100, (daysUntilMaint/30)*100))}%"></div>
+</div>
+</div>
+`;
+}).join('')}
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 card-gradient-2 card-3d">
+<h3 class="text-lg font-semibold mb-4 title-gradient-3">Quality Metrics</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-gray-300">Defect Rate</span>
+<span class="text-2xl font-bold title-gradient-3">2.3%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-gray-300">First Pass Yield</span>
+<span class="text-2xl font-bold title-gradient-2">97.7%</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-gray-300">Rework Rate</span>
+<span class="text-2xl font-bold title-gradient-4">1.2%</span>
+</div>
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 card-gradient-3 card-3d">
+<h3 class="text-lg font-semibold mb-4 title-gradient-5">Cost Analysis</h3>
+<div class="space-y-4">
+<div class="flex justify-between items-center">
+<span class="text-gray-300">Operating Cost</span>
+<span class="text-2xl font-bold title-gradient-5">$12,450</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-gray-300">Maintenance Cost</span>
+<span class="text-2xl font-bold title-gradient-4">$3,200</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-gray-300">Energy Cost</span>
+<span class="text-2xl font-bold title-gradient-2">$8,900</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+`;
+
+// Initialize charts
+setTimeout(() => {
+initProductionChart();
+initEfficiencyChart();
+initComparisonChart();
+}, 100);
+}
+
+function renderMaintenance(container) {
+container.innerHTML = `
+<div class="space-y-6">
+<!-- Maintenance Overview -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+<div class="glass-dark rounded-xl p-6 card-gradient-1 card-3d">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-gray-300 text-sm font-medium">Scheduled</h3>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2">
+<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+<line x1="16" y1="2" x2="16" y2="6"/>
+<line x1="8" y1="2" x2="8" y2="6"/>
+<line x1="3" y1="10" x2="21" y2="10"/>
+</svg>
+</div>
+<div class="text-3xl font-bold title-gradient-1">
+ ${state.maintenanceSchedule.filter(s => s.status === 'scheduled').length}
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 card-gradient-2 card-3d">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-gray-300 text-sm font-medium">Overdue</h3>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2">
+<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+</svg>
+</div>
+<div class="text-3xl font-bold title-gradient-4">
+ ${state.maintenanceSchedule.filter(s =>
+s.status === 'scheduled' && new Date(s.scheduledDate) < new Date()
+).length}
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 card-gradient-3 card-3d">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-gray-300 text-sm font-medium">Completed</h3>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+<polyline points="22 4 12 14.01 9 11.01"/>
+</svg>
+</div>
+<div class="text-3xl font-bold title-gradient-3">
+ ${state.maintenanceSchedule.filter(s => s.status === 'completed').length}
+</div>
+</div>
+
+<div class="glass-dark rounded-xl p-6 card-gradient-4 card-3d">
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-gray-300 text-sm font-medium">Avg Duration</h3>
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
+<circle cx="12" cy="12" r="10"/>
+<polyline points="12 6 12 12 16 14"/>
+</svg>
+</div>
+<div class="text-3xl font-bold title-gradient-5">2.5h</div>
+</div>
+</div>
+
+<!-- Maintenance Schedule -->
+<div class="glass-dark rounded-xl p-6">
+<div class="flex justify-between items-center mb-6">
+<h3 class="text-xl font-semibold title-gradient-1">Maintenance Schedule</h3>
+<button onclick="showScheduleModal()" class="px-4 py-2 btn-primary rounded-lg transition-all flex items-center gap-2 magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<line x1="12" y1="5" x2="12" y2="19"/>
+<line x1="5" y1="12" x2="19" y2="12"/>
+</svg>
+Schedule Maintenance
+</button>
+</div>
+
+<div class="space-y-4">
+ ${state.maintenanceSchedule.map(schedule => {
+const machine = state.machines.find(m => m.id === schedule.machineId);
+const isOverdue = new Date(schedule.scheduledDate) < new Date();
+const isDueSoon = new Date(schedule.scheduledDate) <= new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+
+return `
+<div class="p-4 rounded-lg border ${
+schedule.status === 'completed' ? 'bg-gray-800/50 border-gray-700' :
+isOverdue ? 'alert-high' :
+isDueSoon ? 'alert-medium' :
+'bg-gray-800/50 border-gray-700'
+} data-flow">
+<div class="flex items-center justify-between">
+<div class="flex-1">
+<div class="flex items-center gap-3 mb-2">
+<h4 class="font-semibold text-gray-200">${machine?.name}</h4>
+<span class="px-2 py-1 rounded text-xs ${
+schedule.type === 'Urgent' ? 'bg-red-600/20 text-red-400' :
+schedule.priority === 'high' ? 'bg-orange-600/20 text-orange-400' :
+'bg-blue-600/20 text-blue-400'
+}">${schedule.type}</span>
+ ${schedule.status === 'completed' ?
+'<span class="px-2 py-1 bg-green-600/20 text-green-400 rounded text-xs">Completed</span>' :
+isOverdue ? '<span class="px-2 py-1 bg-red-600 text-white rounded text-xs">Overdue</span>' :
+isDueSoon ? '<span class="px-2 py-1 bg-orange-600 text-white rounded text-xs">Due Soon</span>' : ''
+}
+</div>
+<p class="text-gray-300 mb-2">${schedule.description}</p>
+<div class="flex items-center gap-4 text-sm text-gray-400">
+<span class="flex items-center gap-1">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+<line x1="16" y1="2" x2="16" y2="6"/>
+<line x1="8" y1="2" x2="8" y2="6"/>
+<line x1="3" y1="10" x2="21" y2="10"/>
+</svg>
+ ${schedule.scheduledDate}
+</span>
+<span class="flex items-center gap-1">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+<circle cx="12" cy="7" r="4"/>
+</svg>
+ ${schedule.technician}
+</span>
+</div>
+</div>
+ ${schedule.status === 'scheduled' ? `
+<button onclick="completeMaintenance(${schedule.id})" class="ml-4 px-3 py-1 btn-success rounded text-sm magnetic-btn">
+Mark Complete
+</button>
+` : ''}
+</div>
+</div>
+`;
+}).join('')}
+</div>
+</div>
+
+<!-- Maintenance History -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-6 title-gradient-1">Maintenance History</h3>
+<div class="overflow-x-auto">
+<table class="w-full">
+<thead>
+<tr class="table-header">
+<th class="text-left py-3 px-4 text-gray-200">Date</th>
+<th class="text-left py-3 px-4 text-gray-200">Machine</th>
+<th class="text-left py-3 px-4 text-gray-200">Type</th>
+<th class="text-left py-3 px-4 text-gray-200">Description</th>
+<th class="text-left py-3 px-4 text-gray-200">Technician</th>
+<th class="text-left py-3 px-4 text-gray-200">Duration</th>
+</tr>
+</thead>
+<tbody>
+ ${state.logs.filter(log => log.type === 'maintenance').slice(0, 10).map(log => {
+const machine = state.machines.find(m => m.id === log.machineId);
+return `
+<tr class="table-row">
+<td class="py-3 px-4 text-gray-300">${log.timestamp}</td>
+<td class="py-3 px-4 text-gray-300">${machine?.name}</td>
+<td class="py-3 px-4">
+<span class="px-2 py-1 bg-yellow-600/20 text-yellow-400 rounded text-xs">
+Maintenance
+</span>
+</td>
+<td class="py-3 px-4 text-gray-300">${log.description}</td>
+<td class="py-3 px-4 text-gray-300">${log.technician}</td>
+<td class="py-3 px-4 text-gray-300">2h 30m</td>
+</tr>
+`;
+}).join('')}
+</tbody>
+</table>
+</div>
+</div>
+</div>
+`;
+}
+
+function renderReports(container) {
+container.innerHTML = `
+<div class="space-y-6">
+<!-- Report Generation -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-6 title-gradient-1">Generate Reports</h3>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+<div class="border border-gray-700 rounded-lg p-4 hover:border-indigo-500 transition-all cursor-pointer card-gradient-1 card-3d">
+<div class="flex items-center gap-3 mb-3">
+<div class="p-2 icon-gradient-1 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+<line x1="16" y1="13" x2="8" y2="13"/>
+<line x1="16" y1="17" x2="8" y2="17"/>
+</svg>
+</div>
+<h4 class="font-semibold text-gray-200">Production Report</h4>
+</div>
+<p class="text-sm text-gray-300 mb-4">Daily, weekly, or monthly production metrics and analysis</p>
+<button class="w-full px-4 py-2 btn-primary rounded-lg transition-all magnetic-btn">
+Generate
+</button>
+</div>
+
+<div class="border border-gray-700 rounded-lg p-4 hover:border-purple-500 transition-all cursor-pointer card-gradient-2 card-3d">
+<div class="flex items-center gap-3 mb-3">
+<div class="p-2 icon-gradient-5 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+</svg>
+</div>
+<h4 class="font-semibold text-gray-200">Maintenance Report</h4>
+</div>
+<p class="text-sm text-gray-300 mb-4">Comprehensive maintenance history and upcoming schedules</p>
+<button class="w-full px-4 py-2 btn-warning rounded-lg transition-all magnetic-btn">
+Generate
+</button>
+</div>
+
+<div class="border border-gray-700 rounded-lg p-4 hover:border-green-500 transition-all cursor-pointer card-gradient-3 card-3d">
+<div class="flex items-center gap-3 mb-3">
+<div class="p-2 icon-gradient-3 rounded-lg float-animation">
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+</svg>
+</div>
+<h4 class="font-semibold text-gray-200">Performance Report</h4>
+</div>
+<p class="text-sm text-gray-300 mb-4">Machine efficiency, downtime, and quality metrics</p>
+<button class="w-full px-4 py-2 btn-success rounded-lg transition-all magnetic-btn">
+Generate
+</button>
+</div>
+</div>
+</div>
+
+<!-- Recent Reports -->
+<div class="glass-dark rounded-xl p-6">
+<h3 class="text-xl font-semibold mb-6 title-gradient-1">Recent Reports</h3>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-4 border border-gray-700 rounded-lg hover:bg-gray-800/50 transition-all data-flow">
+<div class="flex items-center gap-4">
+<div class="p-2 icon-gradient-1 rounded-lg">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+</svg>
+</div>
+<div>
+<h4 class="font-medium text-gray-200">Monthly Production Report</h4>
+<p class="text-sm text-gray-400">Generated on Oct 1, 2025 • 2.4 MB</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-gray-700 rounded-lg transition-all magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="7 10 12 15 17 10"/>
+<line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+</button>
+<button class="p-2 hover:bg-gray-700 rounded-lg transition-all magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M3 6h18"/>
+<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+</svg>
+</button>
+</div>
+</div>
+
+<div class="flex items-center justify-between p-4 border border-gray-700 rounded-lg hover:bg-gray-800/50 transition-all data-flow">
+<div class="flex items-center gap-4">
+<div class="p-2 icon-gradient-5 rounded-lg">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+<polyline points="14 2 14 8 20 8"/>
+</svg>
+</div>
+<div>
+<h4 class="font-medium text-gray-200">Q3 Maintenance Summary</h4>
+<p class="text-sm text-gray-400">Generated on Sep 30, 2025 • 1.8 MB</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-gray-700 rounded-lg transition-all magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+<polyline points="7 10 12 15 17 10"/>
+<line x1="12" y1="15" x2="12" y2="3"/>
+</svg>
+</button>
+<button class="p-2 hover:bg-gray-700 rounded-lg transition-all magnetic-btn">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M3 6h18"/>
+<path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+</svg>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+`;
+}
+
+// Chart initialization functions
+function initPerformanceChart() {
+const ctx = document.getElementById('performance-chart');
+if (!ctx) return;
+
+// Destroy existing chart if it exists
+if (chartInstances.performance) {
+chartInstances.performance.destroy();
+}
+
+chartInstances.performance = new Chart(ctx, {
+type: 'line',
+data: {
+labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+datasets: [{
+label: 'Efficiency',
+data: [85, 87, 92, 94, 91, 89],
+borderColor: '#6366f1',
+backgroundColor: 'rgba(99, 102, 241, 0.1)',
+tension: 0.4,
+fill: false,
+pointRadius: 3
+}, {
+label: 'Temperature',
+data: [65, 68, 70, 72, 71, 69],
+borderColor: '#ef4444',
+backgroundColor: 'rgba(239, 68, 68, 0.1)',
+tension: 0.4,
+fill: false,
+pointRadius: 3
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1000
+},
+plugins: {
+legend: {
+labels: { color: '#e5e7eb' }
+}
+},
+scales: {
+x: {
+grid: { color: '#374151' },
+ticks: { color: '#9ca3af' }
+},
+y: {
+grid: { color: '#374151' },
+ticks: { color: '#9ca3af' }
+}
+}
+}
+});
+}
+
+function initProductionChart() {
+const ctx = document.getElementById('production-chart');
+if (!ctx) return;
+
+// Destroy existing chart if it exists
+if (chartInstances.production) {
+chartInstances.production.destroy();
+}
+
+chartInstances.production = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+datasets: [{
+label: 'Production',
+data: [3200, 3500, 3100, 3800, 3600, 2900, 2400],
+backgroundColor: 'rgba(99, 102, 241, 0.7)',
+borderColor: '#6366f1',
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1000
+},
+plugins: {
+legend: {
+labels: { color: '#e5e7eb' }
+}
+},
+scales: {
+x: {
+grid: { color: '#374151' },
+ticks: { color: '#9ca3af' }
+},
+y: {
+grid: { color: '#374151' },
+ticks: { color: '#9ca3af' }
+}
+}
+}
+});
+}
+
+function initEfficiencyChart() {
+const ctx = document.getElementById('efficiency-chart');
+if (!ctx) return;
+
+// Destroy existing chart if it exists
+if (chartInstances.efficiency) {
+chartInstances.efficiency.destroy();
+}
+
+chartInstances.efficiency = new Chart(ctx, {
+type: 'doughnut',
+data: {
+labels: ['Running', 'Idle', 'Maintenance', 'Error'],
+datasets: [{
+data: [65, 20, 10, 5],
+backgroundColor: [
+'rgba(16, 185, 129, 0.7)',
+'rgba(107, 114, 128, 0.7)',
+'rgba(245, 158, 11, 0.7)',
+'rgba(239, 68, 68, 0.7)'
+],
+borderColor: [
+'#10b981',
+'#6b7280',
+'#f59e0b',
+'#ef4444'
+],
+borderWidth: 1
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1000
+},
+plugins: {
+legend: {
+labels: { color: '#e5e7eb' }
+}
+}
+}
+});
+}
+
+function initComparisonChart() {
+const ctx = document.getElementById('comparison-chart');
+if (!ctx) return;
+
+// Destroy existing chart if it exists
+if (chartInstances.comparison) {
+chartInstances.comparison.destroy();
+}
+
+chartInstances.comparison = new Chart(ctx, {
+type: 'radar',
+data: {
+labels: ['Efficiency', 'Temperature', 'Vibration', 'Power', 'Health', 'Production'],
+datasets: state.machines.map(machine => ({
+label: machine.name,
+data: [
+machine.efficiency,
+100 - ((machine.temp - 40) / 50) * 100,
+100 - (machine.vibration / 5) * 100,
+machine.power,
+machine.healthScore,
+(machine.production / 1500) * 100
+],
+borderColor: machine.id === 1 ? '#6366f1' : machine.id === 2 ? '#10b981' : '#f59e0b',
+backgroundColor: machine.id === 1 ? 'rgba(99, 102, 241, 0.2)' : machine.id === 2 ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)',
+pointRadius: 3
+}))
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+animation: {
+duration: 1000
+},
+plugins: {
+legend: {
+labels: { color: '#e5e7eb' }
+}
+},
+scales: {
+r: {
+grid: { color: '#374151' },
+ticks: { color: '#9ca3af' },
+pointLabels: { color: '#e5e7eb' }
+}
+}
+}
+});
+}
+
+// Static Machine Visualization (no animation)
+function startStaticMachineVisualization() {
+const canvas = document.getElementById('machine-canvas');
+if (!canvas) return;
+
+const ctx = canvas.getContext('2d');
+const selectedMachine = state.machines.find(m => m.id === state.selectedMachineId);
+
+// Clear canvas
+ctx.fillStyle = '#000000';
+ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+// Draw machine base with gradient
+const gradient = ctx.createLinearGradient(200, 100, 600, 300);
+gradient.addColorStop(0, '#4a5f8a');
+gradient.addColorStop(0.5, '#3d3d6b');
+gradient.addColorStop(1, '#1a1a3e');
+ctx.fillStyle = gradient;
+ctx.fillRect(200, 150, 400, 200);
+
+// Draw control panel
+ctx.fillStyle = '#111827';
+ctx.fillRect(220, 170, 100, 60);
+
+// Draw status indicators
+for (let i = 0; i < 3; i++) {
+ctx.beginPath();
+ctx.arc(240 + i * 25, 200, 8, 0, Math.PI * 2);
+ctx.fillStyle = selectedMachine.status === 'running' ? '#10b981' : '#6b7280';
+ctx.fill();
+}
+
+if (selectedMachine.status === 'running') {
+// Draw static spindle
+ctx.save();
+ctx.translate(400, 250);
+
+const spindleGradient = ctx.createLinearGradient(-30, -5, 30, 5);
+spindleGradient.addColorStop(0, '#9ca3af');
+spindleGradient.addColorStop(0.5, '#d1d5db');
+spindleGradient.addColorStop(1, '#9ca3af');
+ctx.fillStyle = spindleGradient;
+ctx.fillRect(-30, -5, 60, 10);
+ctx.fillRect(-5, -30, 10, 60);
+ctx.restore();
+
+// Draw workpiece
+ctx.fillStyle = '#4b5563';
+ctx.fillRect(450, 220, 120, 60);
+
+// Draw static particles
+for (let i = 0; i < 5; i++) {
+ctx.fillStyle = `hsl(${30 + Math.random() * 30}, 100%, 50%)`;
+ctx.fillRect(430 + Math.random() * 40, 240 + Math.random() * 20, 4, 4);
+}
+} else {
+// Static spindle
+ctx.fillStyle = '#6b7280';
+ctx.fillRect(370, 240, 60, 20);
+ctx.fillRect(390, 220, 20, 60);
+}
+
+// Draw data overlay
+ctx.fillStyle = '#10b981';
+ctx.font = 'bold 14px monospace';
+ctx.fillText(`TEMP: ${selectedMachine.temp.toFixed(1)}°C`, 50, 50);
+ctx.fillText(`RPM: ${selectedMachine.spindle.toFixed(0)}`, 50, 70);
+ctx.fillText(`POWER: ${selectedMachine.power}%`, 50, 90);
+
+// Draw efficiency meter
+ctx.strokeStyle = '#374151';
+ctx.lineWidth = 10;
+ctx.beginPath();
+ctx.arc(700, 100, 40, 0, Math.PI * 2);
+ctx.stroke();
+
+ctx.strokeStyle = selectedMachine.efficiency > 90 ? '#10b981' : selectedMachine.efficiency > 70 ? '#f59e0b' : '#ef4444';
+ctx.lineWidth = 10;
+ctx.beginPath();
+ctx.arc(700, 100, 40, -Math.PI/2, -Math.PI/2 + (Math.PI * 2 * selectedMachine.efficiency/100));
+ctx.stroke();
+
+ctx.fillStyle = '#e5e7eb';
+ctx.font = 'bold 16px monospace';
+ctx.textAlign = 'center';
+ctx.fillText(`${selectedMachine.efficiency.toFixed(1)}%`, 700, 105);
+}
+
+// Utility Functions
+function selectMachine(machineId) {
+state.selectedMachineId = machineId;
+if (state.currentView === 'monitoring') {
+renderMonitoring(document.getElementById('content-area'));
+}
+}
+
+function toggleMachineStatus(machineId) {
+state.machines = state.machines.map(m =>
+m.id === machineId
+? { ...m, status: m.status === 'running' ? 'idle' : 'running' }
+: m
+);
+render();
+}
+
+function dismissAlert(alertId) {
+state.alerts = state.alerts.filter(a => a.id !== alertId);
+updateNotificationBadge();
+render();
+}
+
+function showLogModal() {
+const modalContainer = document.getElementById('modal-container');
+modalContainer.innerHTML = `
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+<div class="modal-content rounded-xl p-6 max-w-md w-full">
+<h3 class="text-xl font-semibold mb-4 title-gradient-1">Add Log Entry</h3>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Type</label>
+<select id="log-type" class="w-full select-field rounded-lg px-3 py-2">
+<option value="work">Work Performed</option>
+<option value="maintenance">Maintenance</option>
+<option value="alert">Alert/Issue</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Description</label>
+<textarea id="log-description" class="w-full textarea-field rounded-lg px-3 py-2" rows="3" placeholder="Describe the activity..."></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300" id="log-person-label">Operator Name</label>
+<input type="text" id="log-person" class="w-full input-field rounded-lg px-3 py-2" placeholder="Enter name...">
+</div>
+<div class="flex gap-3 justify-end">
+<button onclick="closeModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all">Cancel</button>
+<button onclick="addLog()" class="px-4 py-2 btn-primary rounded-lg transition-all">Add Log</button>
+</div>
+</div>
+</div>
+</div>
+`;
+
+document.getElementById('log-type').addEventListener('change', (e) => {
+document.getElementById('log-person-label').textContent = e.target.value === 'maintenance' ? 'Technician' : 'Operator';
+});
+}
+
+function addLog() {
+const type = document.getElementById('log-type').value;
+const description = document.getElementById('log-description').value;
+const person = document.getElementById('log-person').value;
+
+if (!description || !person) return;
+
+const log = {
+id: Date.now(),
+machineId: state.selectedMachineId,
+type: type,
+timestamp: new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+description: description,
+[type === 'maintenance' ? 'technician' : 'operator']: person,
+severity: type === 'alert' ? 'high' : type === 'maintenance' ? 'medium' : 'low'
+};
+
+state.logs.unshift(log);
+
+if (type === 'maintenance') {
+state.machines = state.machines.map(m =>
+m.id === state.selectedMachineId
+? { ...m, maintenanceCount: m.maintenanceCount + 1, hoursSinceMaint: 0, lastMaint: new Date().toISOString().split('T')[0] }
+: m
+);
+}
+
+closeModal();
+render();
+}
+
+function showScheduleModal() {
+const modalContainer = document.getElementById('modal-container');
+modalContainer.innerHTML = `
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+<div class="modal-content rounded-xl p-6 max-w-md w-full">
+<h3 class="text-xl font-semibold mb-4 title-gradient-1">Schedule Maintenance</h3>
+<div class="space-y-4">
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Machine</label>
+<select id="schedule-machine" class="w-full select-field rounded-lg px-3 py-2">
+ ${state.machines.map(machine => `
+<option value="${machine.id}">${machine.name}</option>
+`).join('')}
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Scheduled Date</label>
+<input type="date" id="schedule-date" class="w-full input-field rounded-lg px-3 py-2">
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Priority</label>
+<select id="schedule-priority" class="w-full select-field rounded-lg px-3 py-2">
+<option value="low">Low</option>
+<option value="medium">Medium</option>
+<option value="high">High</option>
+</select>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Description</label>
+<textarea id="schedule-description" class="w-full textarea-field rounded-lg px-3 py-2" rows="3" placeholder="Describe the maintenance task..."></textarea>
+</div>
+<div>
+<label class="block text-sm font-medium mb-2 text-gray-300">Technician</label>
+<input type="text" id="schedule-technician" class="w-full input-field rounded-lg px-3 py-2" placeholder="Enter technician name...">
+</div>
+<div class="flex gap-3 justify-end">
+<button onclick="closeModal()" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-all">Cancel</button>
+<button onclick="addMaintenanceSchedule()" class="px-4 py-2 btn-primary rounded-lg transition-all">Schedule</button>
+</div>
+</div>
+</div>
+</div>
+`;
+}
+
+function addMaintenanceSchedule() {
+const machineId = parseInt(document.getElementById('schedule-machine').value);
+const scheduledDate = document.getElementById('schedule-date').value;
+const priority = document.getElementById('schedule-priority').value;
+const description = document.getElementById('schedule-description').value;
+const technician = document.getElementById('schedule-technician').value;
+
+if (!scheduledDate || !description || !technician) return;
+
+const schedule = {
+id: Date.now(),
+machineId: machineId,
+scheduledDate: scheduledDate,
+type: priority === 'high' ? 'Urgent' : 'Routine',
+description: description,
+technician: technician,
+status: 'scheduled',
+priority: priority
+};
+
+state.maintenanceSchedule.push(schedule);
+
+state.machines = state.machines.map(m =>
+m.id === machineId
+? { ...m, nextMaintDue: scheduledDate }
+: m
+);
+
+closeModal();
+render();
+}
+
+function completeMaintenance(scheduleId) {
+const schedule = state.maintenanceSchedule.find(s => s.id === scheduleId);
+if (!schedule) return;
+
+state.maintenanceSchedule = state.maintenanceSchedule.map(s =>
+s.id === scheduleId
+? { ...s, status: 'completed' }
+: s
+);
+
+state.machines = state.machines.map(m =>
+m.id === schedule.machineId
+? { ...m, maintenanceCount: m.maintenanceCount + 1, hoursSinceMaint: 0, lastMaint: new Date().toISOString().split('T')[0] }
+: m
+);
+
+const log = {
+id: Date.now(),
+machineId: schedule.machineId,
+type: 'maintenance',
+timestamp: new Date().toLocaleString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+description: schedule.description,
+technician: schedule.technician,
+severity: 'low'
+};
+state.logs.unshift(log);
+
+render();
+}
+
+function closeModal() {
+document.getElementById('modal-container').innerHTML = '';
+}
+
+function toggleTheme() {
+// Theme toggle functionality (placeholder)
+console.log('Theme toggle clicked');
+}
+</script>
+</body>
+</html>
